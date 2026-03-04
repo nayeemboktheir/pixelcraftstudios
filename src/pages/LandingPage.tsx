@@ -217,6 +217,8 @@ const SectionRenderer = ({ section, theme, slug }: SectionRendererProps) => {
     quantity: 1,
     selectedVariationId: "",
   });
+  // Multi-variant selection: { [variationId]: { quantity, sizeId } }
+  const [variantSelections, setVariantSelections] = useState<Record<string, { quantity: number; sizeId: string }>>({});
   const [shippingZone, setShippingZone] = useState<ShippingZone>('outside_dhaka');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [products, setProducts] = useState<ProductWithVariations[]>([]);
@@ -284,7 +286,7 @@ const SectionRenderer = ({ section, theme, slug }: SectionRendererProps) => {
     return () => clearInterval(timer);
   }, [section]);
 
-  // Get selected variation details
+  // Get selected variation details (legacy single-select)
   const getSelectedVariation = () => {
     for (const product of products) {
       const variation = product.variations.find(v => v.id === orderForm.selectedVariationId);
@@ -295,6 +297,20 @@ const SectionRenderer = ({ section, theme, slug }: SectionRendererProps) => {
     return null;
   };
 
+  // Get all selected items from multi-variant selections
+  const getSelectedItems = () => {
+    const items: Array<{ product: ProductWithVariations; variation: ProductVariation; quantity: number }> = [];
+    for (const product of products) {
+      for (const variation of product.variations) {
+        const sel = variantSelections[variation.id];
+        if (sel && sel.quantity > 0) {
+          items.push({ product, variation, quantity: sel.quantity });
+        }
+      }
+    }
+    return items;
+  };
+
   const handleOrderSubmit = async (e: React.FormEvent, settings: Record<string, unknown>) => {
     e.preventDefault();
     if (!orderForm.name || !orderForm.phone || !orderForm.address) {
@@ -302,37 +318,39 @@ const SectionRenderer = ({ section, theme, slug }: SectionRendererProps) => {
       return;
     }
 
-    const selected = getSelectedVariation();
-    if (!selected) {
-      toast.error("প্রোডাক্ট সিলেক্ট করুন");
-      return;
+    const selectedItems = getSelectedItems();
+    // Fallback to legacy single-select if no multi-variant selections
+    if (selectedItems.length === 0) {
+      const selected = getSelectedVariation();
+      if (!selected) {
+        toast.error("প্রোডাক্ট সিলেক্ট করুন");
+        return;
+      }
+      selectedItems.push({ ...selected, quantity: orderForm.quantity });
     }
 
-    const { product, variation } = selected;
-    const subtotal = variation.price * orderForm.quantity;
-    const shippingCost = SHIPPING_RATES[shippingZone];
+    const isFreeDelivery = !!(settings as any).freeDelivery;
+    const shippingCost = isFreeDelivery ? 0 : SHIPPING_RATES[shippingZone];
+    const subtotal = selectedItems.reduce((sum, item) => sum + item.variation.price * item.quantity, 0);
     const total = subtotal + shippingCost;
+    const totalQuantity = selectedItems.reduce((sum, item) => sum + item.quantity, 0);
 
     setIsSubmitting(true);
     try {
-      // Use the backend function (public) to create the order (bypasses RLS safely)
       const { data, error } = await supabase.functions.invoke('place-order', {
         body: {
           userId: null,
-          items: [
-            {
-              productId: product.id,
-              variationId: variation.id,
-              quantity: orderForm.quantity,
-            },
-          ],
+          items: selectedItems.map(item => ({
+            productId: item.product.id,
+            variationId: item.variation.id,
+            quantity: item.quantity,
+          })),
           shipping: {
             name: orderForm.name,
             phone: orderForm.phone,
             address: orderForm.address,
           },
           shippingZone,
-          // IMPORTANT: mark as landing page so admin stats + order protection work consistently
           orderSource: 'landing_page',
           notes: `LP:${slug}`,
         },
@@ -341,20 +359,19 @@ const SectionRenderer = ({ section, theme, slug }: SectionRendererProps) => {
       if (error) throw error;
       if (!data?.orderId) throw new Error('Order was not created');
 
-      // Navigate to confirmation page with items for tracking
       navigate('/order-confirmation', {
         state: {
           orderNumber: data.orderNumber || data.orderId,
           customerName: orderForm.name,
           phone: orderForm.phone,
-          total: total,
-          items: [{
-            productId: product.id,
-            productName: product.name,
-            price: variation.price,
-            quantity: orderForm.quantity,
-          }],
-          numItems: orderForm.quantity,
+          total,
+          items: selectedItems.map(item => ({
+            productId: item.product.id,
+            productName: `${item.product.name} - ${item.variation.name}`,
+            price: item.variation.price,
+            quantity: item.quantity,
+          })),
+          numItems: totalQuantity,
           fromLandingPage: true,
           landingPageSlug: slug,
         }
@@ -605,12 +622,18 @@ const SectionRenderer = ({ section, theme, slug }: SectionRendererProps) => {
         productIds?: string[];
         freeDeliveryMessage?: string;
         freeDelivery?: boolean;
+        sizeOptions?: string[];
       };
 
-      const selected = getSelectedVariation();
-      const subtotal = selected ? selected.variation.price * orderForm.quantity : 0;
+      const selectedItems = getSelectedItems();
+      const subtotal = selectedItems.reduce((sum, item) => sum + item.variation.price * item.quantity, 0);
       const shippingCost = settings.freeDelivery ? 0 : SHIPPING_RATES[shippingZone];
       const total = subtotal + shippingCost;
+      const totalQuantity = selectedItems.reduce((sum, item) => sum + item.quantity, 0);
+      const hasSelections = selectedItems.length > 0;
+
+      // Default size options
+      const sizeOpts = settings.sizeOptions || ['S', 'M', 'L', 'XL', '2XL', '3XL'];
 
       return (
         <section
@@ -628,94 +651,100 @@ const SectionRenderer = ({ section, theme, slug }: SectionRendererProps) => {
               </div>
             )}
             
-            {/* Product Selection */}
+            {/* Product Selection - Multi-variant rows like reference */}
             {products.length > 0 && (
               <div className="mb-8">
-                <h3 className="text-lg font-semibold mb-4">প্রোডাক্ট সিলেক্ট করে বাকি তথ্য দিনঃ</h3>
-                <div className="bg-white rounded-xl border overflow-hidden">
-                  <div className="hidden md:grid grid-cols-[auto_1fr_auto_auto] gap-4 p-3 bg-gray-50 border-b text-sm font-medium text-gray-600">
-                    <span>Product</span>
-                    <span></span>
-                    <span>Quantity</span>
-                    <span>Price</span>
-                  </div>
-                  {products.map((product) => (
-                    <div key={product.id}>
-                      {product.variations.map((variation) => (
-                        <div 
-                          key={variation.id} 
-                          className={`flex flex-col md:grid md:grid-cols-[auto_1fr_auto_auto] gap-3 md:gap-4 p-4 items-start md:items-center cursor-pointer transition-colors ${
-                            orderForm.selectedVariationId === variation.id 
-                              ? 'bg-amber-50 border-l-4 border-amber-500' 
-                              : 'hover:bg-gray-50 border-l-4 border-transparent'
-                          }`}
-                          onClick={() => setOrderForm(prev => ({ ...prev, selectedVariationId: variation.id }))}
-                        >
-                          <div className="flex items-center gap-3 w-full md:w-auto md:contents">
-                            <div className="w-14 h-14 md:w-16 md:h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
-                              {product.images?.[0] && (
-                                <img 
-                                  src={product.images[0]} 
-                                  alt={product.name}
-                                  className="w-full h-full object-cover"
-                                />
-                              )}
+                {products.map((product) => (
+                  <div key={product.id} className="bg-white rounded-2xl border shadow-sm overflow-hidden mb-4">
+                    {/* Product header */}
+                    <div className="flex items-center gap-3 p-4 border-b bg-gray-50/50">
+                      {product.images?.[0] && (
+                        <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                          <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
+                        </div>
+                      )}
+                      <div>
+                        <p className="font-bold text-base">{product.name}</p>
+                        <p className="font-bold" style={{ color: settings.accentColor || '#ef4444' }}>
+                          ৳ {product.price.toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Variation rows */}
+                    <div className="divide-y">
+                      {product.variations.map((variation) => {
+                        const sel = variantSelections[variation.id] || { quantity: 0, sizeId: '' };
+                        return (
+                          <div key={variation.id} className="flex items-center gap-3 p-3 md:p-4">
+                            {/* Variation image or product fallback */}
+                            <div className="w-12 h-14 md:w-14 md:h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                              <img 
+                                src={product.images?.[0] || ''} 
+                                alt={variation.name}
+                                className="w-full h-full object-cover"
+                              />
                             </div>
-                            <div className="flex-1">
-                              <p className="font-medium text-sm md:text-base">{product.name}</p>
-                              <p className="text-xs md:text-sm text-gray-500">Weight: {variation.name}</p>
+
+                            {/* Variation name */}
+                            <div className="w-16 md:w-20 flex-shrink-0">
+                              <span className="font-medium text-sm md:text-base">{variation.name}</span>
                             </div>
-                            <div className="text-right md:hidden">
-                              <p className="font-bold text-base" style={{ color: settings.accentColor || '#b8860b' }}>
-                                ৳ {variation.price.toLocaleString()}
-                              </p>
-                              {variation.original_price && variation.original_price > variation.price && (
-                                <p className="text-xs text-gray-400 line-through">
-                                  ৳ {variation.original_price.toLocaleString()}
-                                </p>
-                              )}
+
+                            {/* Size dropdown */}
+                            <div className="flex-1 min-w-0">
+                              <select
+                                value={sel.sizeId}
+                                onChange={(e) => {
+                                  setVariantSelections(prev => ({
+                                    ...prev,
+                                    [variation.id]: { ...sel, sizeId: e.target.value },
+                                  }));
+                                }}
+                                className="w-full h-10 px-3 rounded-lg border bg-gray-50 text-sm appearance-none cursor-pointer"
+                                style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'12\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23666\' stroke-width=\'2\'%3E%3Cpath d=\'M6 9l6 6 6-6\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center' }}
+                              >
+                                <option value="">সাইজ</option>
+                                {sizeOpts.map(size => (
+                                  <option key={size} value={size}>{size}</option>
+                                ))}
+                              </select>
                             </div>
-                          </div>
-                          {orderForm.selectedVariationId === variation.id && (
-                            <div className="flex items-center gap-2 w-full md:w-auto justify-center md:justify-start">
+
+                            {/* Quantity controls */}
+                            <div className="flex items-center gap-1 flex-shrink-0">
                               <button
                                 type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setOrderForm(prev => ({ ...prev, quantity: Math.max(1, prev.quantity - 1) }));
+                                onClick={() => {
+                                  setVariantSelections(prev => ({
+                                    ...prev,
+                                    [variation.id]: { ...sel, quantity: Math.max(0, sel.quantity - 1) },
+                                  }));
                                 }}
-                                className="w-8 h-8 rounded-full border flex items-center justify-center hover:bg-gray-100"
+                                className="w-8 h-8 rounded-full border flex items-center justify-center hover:bg-gray-100 text-gray-500 transition-colors"
                               >
                                 −
                               </button>
-                              <span className="w-8 text-center font-medium">{orderForm.quantity}</span>
+                              <span className="w-8 text-center font-semibold text-sm">{sel.quantity}</span>
                               <button
                                 type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setOrderForm(prev => ({ ...prev, quantity: prev.quantity + 1 }));
+                                onClick={() => {
+                                  setVariantSelections(prev => ({
+                                    ...prev,
+                                    [variation.id]: { ...sel, quantity: sel.quantity + 1 },
+                                  }));
                                 }}
-                                className="w-8 h-8 rounded-full border flex items-center justify-center hover:bg-gray-100"
+                                className="w-8 h-8 rounded-full border flex items-center justify-center hover:bg-gray-100 text-gray-500 transition-colors"
                               >
                                 +
                               </button>
                             </div>
-                          )}
-                          <div className="hidden md:block text-right">
-                            <p className="font-bold text-lg" style={{ color: settings.accentColor || '#b8860b' }}>
-                              ৳ {variation.price.toLocaleString()}
-                            </p>
-                            {variation.original_price && variation.original_price > variation.price && (
-                              <p className="text-sm text-gray-400 line-through">
-                                ৳ {variation.original_price.toLocaleString()}
-                              </p>
-                            )}
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
             )}
             
@@ -772,28 +801,33 @@ const SectionRenderer = ({ section, theme, slug }: SectionRendererProps) => {
               )}
 
               {/* Order Summary */}
-              {selected && (
+              {hasSelections && (
                 <div className="bg-gray-50 rounded-xl p-4 mt-6">
                   <h3 className="font-semibold mb-4">Your order</h3>
                   <div className="space-y-3">
-                    <div className="flex justify-between items-center pb-3 border-b">
-                      <div className="flex items-center gap-3">
-                        {selected.product.images?.[0] && (
-                          <img 
-                            src={selected.product.images[0]} 
-                            alt="" 
-                            className="w-12 h-12 rounded object-cover"
-                          />
-                        )}
-                        <div>
-                          <p className="font-medium text-sm">{selected.product.name} - {selected.variation.name}</p>
-                          <p className="text-sm text-gray-500">× {orderForm.quantity}</p>
+                    {selectedItems.map((item, idx) => (
+                      <div key={idx} className="flex justify-between items-center pb-3 border-b last:border-b-0">
+                        <div className="flex items-center gap-3">
+                          {item.product.images?.[0] && (
+                            <img 
+                              src={item.product.images[0]} 
+                              alt="" 
+                              className="w-10 h-10 rounded object-cover"
+                            />
+                          )}
+                          <div>
+                            <p className="font-medium text-sm">{item.variation.name}</p>
+                            <p className="text-xs text-gray-500">
+                              {variantSelections[item.variation.id]?.sizeId && `Size: ${variantSelections[item.variation.id].sizeId} · `}
+                              × {item.quantity}
+                            </p>
+                          </div>
                         </div>
+                        <span className="font-medium text-sm">৳ {(item.variation.price * item.quantity).toLocaleString()}</span>
                       </div>
-                      <span className="font-medium">৳ {(selected.variation.price * orderForm.quantity).toLocaleString()}</span>
-                    </div>
+                    ))}
                     <div className="flex justify-between text-sm">
-                      <span>Subtotal</span>
+                      <span>Subtotal ({totalQuantity} items)</span>
                       <span>৳ {subtotal.toLocaleString()}</span>
                     </div>
                     {shippingCost > 0 && (
@@ -818,7 +852,7 @@ const SectionRenderer = ({ section, theme, slug }: SectionRendererProps) => {
                   color: "#fff",
                   borderRadius: theme.borderRadius,
                 }}
-                disabled={isSubmitting || !selected}
+                disabled={isSubmitting || !hasSelections}
               >
                 {isSubmitting ? "Processing..." : `${settings.buttonText}  ৳ ${total.toLocaleString()}`}
               </Button>
