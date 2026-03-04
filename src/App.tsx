@@ -38,7 +38,7 @@ import AdminSiteSettings from '@/pages/admin/AdminSiteSettings';
 import AdminSocialMedia from '@/pages/admin/AdminSocialMedia';
 import AdminReports from '@/pages/admin/AdminReports';
 import AdminHomePageEdit from '@/pages/admin/AdminHomePageEdit';
-import AdminLandingVideoSettings from '@/pages/admin/AdminLandingVideoSettings';
+
 
 
 const queryClient = new QueryClient();
@@ -86,7 +86,7 @@ const App = () => (
               <Route path="/admin/shop-settings" element={<AdminLayout><AdminShopSettings /></AdminLayout>} />
               <Route path="/admin/site-settings" element={<AdminLayout><AdminSiteSettings /></AdminLayout>} />
               <Route path="/admin/home-page-edit" element={<AdminLayout><AdminHomePageEdit /></AdminLayout>} />
-              <Route path="/admin/landing-video-settings" element={<AdminLandingVideoSettings />} />
+              
               
 
               {/* Default redirect to admin */}
