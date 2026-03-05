@@ -65,6 +65,7 @@ const App = () => (
               <Route path="/lp/:slug" element={<LandingPage />} />
 
               {/* Admin Routes */}
+
               <Route path="/admin" element={<AdminLayout><AdminDashboard /></AdminLayout>} />
               <Route path="/admin/reports" element={<AdminLayout><AdminReports /></AdminLayout>} />
               <Route path="/admin/products" element={<AdminLayout><AdminProducts /></AdminLayout>} />
@@ -89,8 +90,8 @@ const App = () => (
               
               
 
-              {/* Default redirect to admin */}
-              <Route path="/" element={<Navigate to="/admin" replace />} />
+              {/* Temporary homepage - landing page */}
+              <Route path="/" element={<LandingPage defaultSlug="LP-premium-jubba" />} />
               <Route path="*" element={<Navigate to="/admin" replace />} />
             </Routes>
           </BrowserRouter>
