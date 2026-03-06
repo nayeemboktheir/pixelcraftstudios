@@ -17,7 +17,7 @@ import AuthPage from '@/pages/AuthPage';
 import OrderConfirmationPage from '@/pages/OrderConfirmationPage';
 import HomePage from '@/pages/HomePage';
 import FashionHomePage from '@/pages/FashionHomePage';
-import EbookLandingPage from '@/pages/EbookLandingPage';
+// EbookLandingPage is now database-driven via /lp/ebook
 import ProductsPage from '@/pages/ProductsPage';
 import ProductDetailPage from '@/pages/ProductDetailPage';
 import CartPage from '@/pages/CartPage';
@@ -71,7 +71,7 @@ const App = () => (
             <Routes>
               {/* Storefront Routes */}
               <Route path="/" element={<FashionHomePage />} />
-              <Route path="/lp/ebook" element={<EbookLandingPage />} />
+              {/* /lp/ebook is now database-driven via /lp/:slug */}
               <Route path="/products" element={<StorefrontLayout><ProductsPage /></StorefrontLayout>} />
               <Route path="/products/:slug" element={<StorefrontLayout><ProductDetailPage /></StorefrontLayout>} />
               <Route path="/cart" element={<StorefrontLayout><CartPage /></StorefrontLayout>} />
