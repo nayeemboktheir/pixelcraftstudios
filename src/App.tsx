@@ -71,7 +71,7 @@ const App = () => (
             <Routes>
               {/* Storefront Routes */}
               <Route path="/" element={<FashionHomePage />} />
-              <Route path="/lp/ebook" element={<EbookLandingPage />} />
+              {/* /lp/ebook is now database-driven via /lp/:slug */}
               <Route path="/products" element={<StorefrontLayout><ProductsPage /></StorefrontLayout>} />
               <Route path="/products/:slug" element={<StorefrontLayout><ProductDetailPage /></StorefrontLayout>} />
               <Route path="/cart" element={<StorefrontLayout><CartPage /></StorefrontLayout>} />
