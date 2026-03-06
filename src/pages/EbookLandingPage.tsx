@@ -193,20 +193,11 @@ export default function EbookLandingPage() {
             >
               <div className="relative">
                 <div className="absolute -inset-4 bg-accent/20 blur-3xl rounded-full" />
-                <div className="relative bg-card/10 backdrop-blur-sm rounded-2xl p-6 border border-white/10 shadow-2xl">
-                  <div className="w-[280px] md:w-[320px] aspect-[3/4] bg-gradient-to-br from-primary/80 to-primary rounded-xl flex items-center justify-center overflow-hidden">
-                    <div className="text-center p-8">
-                      <h3 className="text-3xl font-bold text-white font-display mb-2">AI PROMPT</h3>
-                      <h4 className="text-2xl font-bold text-accent font-display mb-4">Mastery</h4>
-                      <div className="w-16 h-0.5 bg-accent mx-auto mb-4" />
-                      <p className="text-white/70 text-sm">Zero Skill থেকে Pro-Level Output তৈরি</p>
-                      <div className="mt-6">
-                        <img src={pixelcraftLogo} alt="Pixelcraft" className="w-12 h-12 mx-auto rounded-lg opacity-80" />
-                        <p className="text-white/50 text-xs mt-2">PIXELCRAFT STUDIO</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <img
+                  src={ebookCover}
+                  alt="AI Prompt Mastery Ebook"
+                  className="relative w-[320px] md:w-[400px] rounded-2xl shadow-2xl border border-white/10"
+                />
               </div>
             </motion.div>
           </div>
