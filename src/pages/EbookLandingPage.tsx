@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Link, useNavigate } from 'react-router-dom';
 import pixelcraftLogo from '@/assets/pixelcraft-logo.jpeg';
+import ebookCover from '@/assets/ebook-cover.jpeg';
 
 export default function EbookLandingPage() {
   const navigate = useNavigate();
