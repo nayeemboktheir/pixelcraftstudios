@@ -110,7 +110,7 @@ export default function EbookLandingPage() {
   return (
     <div className="min-h-screen bg-background font-sans">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
+      <header className="sticky top-0 z-50 bg-transparent backdrop-blur-md border-b border-white/10">
         <div className="container-custom py-3">
           <div className="flex items-center justify-between">
             <Link to="/" className="flex items-center gap-3">
