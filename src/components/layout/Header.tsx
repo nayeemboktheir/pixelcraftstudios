@@ -279,7 +279,7 @@ const Header = () => {
             <li>
               <Link 
                 to="/about" 
-                className="text-foreground hover:text-primary font-medium transition-colors"
+                className="text-primary-foreground hover:text-accent font-medium transition-colors"
               >
                 About Us
               </Link>
