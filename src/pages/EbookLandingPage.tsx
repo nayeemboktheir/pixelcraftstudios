@@ -110,7 +110,7 @@ export default function EbookLandingPage() {
   return (
     <div className="min-h-screen bg-background font-sans">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
+      <header className="sticky top-0 z-50 bg-transparent backdrop-blur-md border-b border-white/10">
         <div className="container-custom py-3">
           <div className="flex items-center justify-between">
             <Link to="/" className="flex items-center gap-3">
@@ -378,9 +378,7 @@ export default function EbookLandingPage() {
               </div>
 
               <div className="flex items-center justify-center gap-4 mb-6">
-                <span className="text-4xl font-bold text-accent font-display">৳৪৯৯</span>
-                <span className="text-xl text-white/40 line-through">৳৯৯৯</span>
-                <Badge className="bg-accent text-accent-foreground">৫০% ছাড়</Badge>
+                <span className="text-4xl font-bold text-accent font-display">৳১৯৯</span>
               </div>
 
               <div className="space-y-3 mb-8 text-left max-w-sm mx-auto">
@@ -403,7 +401,7 @@ export default function EbookLandingPage() {
                 className="w-full bg-accent text-accent-foreground hover:bg-accent/90 rounded-full text-lg font-bold py-6 shadow-lg"
               >
                 <ShoppingBag className="mr-2 w-5 h-5" />
-                এখনই অর্ডার করুন — ৳৪৯৯
+                এখনই অর্ডার করুন — ৳১৯৯
               </Button>
               <p className="text-white/40 text-sm mt-4">🔒 সম্পূর্ণ নিরাপদ পেমেন্ট</p>
             </div>
