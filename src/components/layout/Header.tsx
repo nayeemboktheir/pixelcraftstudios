@@ -257,7 +257,7 @@ const Header = () => {
       </div>
 
       {/* Navigation - Desktop */}
-      <nav className="hidden md:block border-t border-border">
+      <nav className="hidden md:block border-t border-primary-foreground/20">
         <div className="container-custom">
           <ul className="flex items-center gap-8 py-3">
             <li>
