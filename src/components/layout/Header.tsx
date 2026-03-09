@@ -104,7 +104,7 @@ const Header = () => {
                 }}
               />
             ) : (
-              <span className="text-base md:text-lg font-semibold text-foreground leading-none">
+              <span className="text-base md:text-lg font-semibold text-primary-foreground leading-none">
                 {siteName}
               </span>
             )}
