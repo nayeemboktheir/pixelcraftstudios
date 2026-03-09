@@ -173,7 +173,7 @@ const Header = () => {
             {/* Account */}
             {user ? (
               <div className="relative group">
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" className="text-primary-foreground hover:text-accent hover:bg-primary-foreground/10">
                   <User className="h-5 w-5" />
                 </Button>
                 <div className="absolute top-full right-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
