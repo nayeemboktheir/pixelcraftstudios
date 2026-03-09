@@ -84,8 +84,8 @@ const Header = () => {
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      isScrolled ? 'bg-background/95 backdrop-blur-md shadow-md' : 'bg-background'
-    }`}>
+      isScrolled ? 'bg-primary/95 backdrop-blur-md shadow-md' : 'bg-primary'
+    } text-primary-foreground`}>
       {/* Main Header */}
       <div className="container-custom py-4">
         <div className="flex items-center justify-between gap-4">
@@ -104,7 +104,7 @@ const Header = () => {
                 }}
               />
             ) : (
-              <span className="text-base md:text-lg font-semibold text-foreground leading-none">
+              <span className="text-base md:text-lg font-semibold text-primary-foreground leading-none">
                 {siteName}
               </span>
             )}
@@ -135,9 +135,9 @@ const Header = () => {
           <div className="flex items-center gap-2 md:gap-4">
             {/* Mobile Search Toggle */}
             <Button 
-              variant="ghost" 
+              variant="ghost"
               size="icon" 
-              className="md:hidden"
+              className="md:hidden text-primary-foreground hover:text-accent hover:bg-primary-foreground/10"
               onClick={() => setIsSearchOpen(!isSearchOpen)}
             >
               <Search className="h-5 w-5" />
@@ -145,7 +145,7 @@ const Header = () => {
 
             {/* Wishlist */}
             <Link to="/wishlist">
-              <Button variant="ghost" size="icon" className="relative">
+              <Button variant="ghost" size="icon" className="relative text-primary-foreground hover:text-accent hover:bg-primary-foreground/10">
                 <Heart className="h-5 w-5" />
                 {wishlistItems.length > 0 && (
                   <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-secondary text-secondary-foreground text-xs flex items-center justify-center font-bold">
@@ -159,7 +159,7 @@ const Header = () => {
             <Button 
               variant="ghost" 
               size="icon" 
-              className="relative"
+              className="relative text-primary-foreground hover:text-accent hover:bg-primary-foreground/10"
               onClick={() => dispatch(toggleCart())}
             >
               <ShoppingCart className="h-5 w-5" />
@@ -173,7 +173,7 @@ const Header = () => {
             {/* Account */}
             {user ? (
               <div className="relative group">
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" className="text-primary-foreground hover:text-accent hover:bg-primary-foreground/10">
                   <User className="h-5 w-5" />
                 </Button>
                 <div className="absolute top-full right-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
@@ -207,7 +207,7 @@ const Header = () => {
               </div>
             ) : (
               <Link to="/auth">
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" className="text-primary-foreground hover:text-accent hover:bg-primary-foreground/10">
                   <User className="h-5 w-5" />
                 </Button>
               </Link>
@@ -217,7 +217,7 @@ const Header = () => {
             <Button 
               variant="ghost" 
               size="icon" 
-              className="md:hidden"
+              className="md:hidden text-primary-foreground hover:text-accent hover:bg-primary-foreground/10"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -257,13 +257,13 @@ const Header = () => {
       </div>
 
       {/* Navigation - Desktop */}
-      <nav className="hidden md:block border-t border-border">
+      <nav className="hidden md:block border-t border-primary-foreground/20">
         <div className="container-custom">
           <ul className="flex items-center gap-8 py-3">
             <li>
               <Link 
                 to="/" 
-                className="text-foreground hover:text-primary font-medium transition-colors"
+                className="text-primary-foreground hover:text-accent font-medium transition-colors"
               >
                 Home
               </Link>
@@ -271,7 +271,7 @@ const Header = () => {
             <li>
               <Link 
                 to="/products" 
-                className="text-foreground hover:text-primary font-medium transition-colors"
+                className="text-primary-foreground hover:text-accent font-medium transition-colors"
               >
                 Products
               </Link>
@@ -279,7 +279,7 @@ const Header = () => {
             <li>
               <Link 
                 to="/about" 
-                className="text-foreground hover:text-primary font-medium transition-colors"
+                className="text-primary-foreground hover:text-accent font-medium transition-colors"
               >
                 About Us
               </Link>
@@ -287,7 +287,7 @@ const Header = () => {
             <li>
               <Link 
                 to="/contact" 
-                className="text-foreground hover:text-primary font-medium transition-colors"
+                className="text-primary-foreground hover:text-accent font-medium transition-colors"
               >
                 Contact Us
               </Link>
@@ -303,14 +303,14 @@ const Header = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden border-t border-border bg-background"
+            className="md:hidden border-t border-primary-foreground/20 bg-primary"
           >
             <nav className="container-custom py-4">
               <ul className="space-y-2">
                 <li>
                   <Link 
                     to="/" 
-                    className="block py-2 text-foreground hover:text-primary font-medium"
+                    className="block py-2 text-primary-foreground hover:text-accent font-medium"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Home
@@ -319,7 +319,7 @@ const Header = () => {
                 <li>
                   <Link 
                     to="/products" 
-                    className="block py-2 text-foreground hover:text-primary font-medium"
+                    className="block py-2 text-primary-foreground hover:text-accent font-medium"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Products
@@ -328,7 +328,7 @@ const Header = () => {
                 <li>
                   <Link 
                     to="/about" 
-                    className="block py-2 text-foreground hover:text-primary font-medium"
+                    className="block py-2 text-primary-foreground hover:text-accent font-medium"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     About Us
@@ -337,7 +337,7 @@ const Header = () => {
                 <li>
                   <Link 
                     to="/contact" 
-                    className="block py-2 text-foreground hover:text-primary font-medium"
+                    className="block py-2 text-primary-foreground hover:text-accent font-medium"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Contact Us
