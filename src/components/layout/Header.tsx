@@ -159,7 +159,7 @@ const Header = () => {
             <Button 
               variant="ghost" 
               size="icon" 
-              className="relative"
+              className="relative text-primary-foreground hover:text-accent hover:bg-primary-foreground/10"
               onClick={() => dispatch(toggleCart())}
             >
               <ShoppingCart className="h-5 w-5" />
