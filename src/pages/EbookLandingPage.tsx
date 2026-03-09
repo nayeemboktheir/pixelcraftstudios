@@ -494,7 +494,7 @@ export default function EbookLandingPage() {
         <div className="container-custom">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-3">
-              <img src={pixelcraftLogo} alt="Pixelcraft Studio" className="h-8 w-auto rounded-lg" />
+              <img src={pcsLogo} alt="Pixelcraft Studio" className="h-8 w-auto rounded-lg" />
               <span className="font-display font-bold">Pixelcraft Studio</span>
             </div>
             <div className="flex items-center gap-6">
