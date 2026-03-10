@@ -115,6 +115,12 @@ const CheckoutPage = () => {
     address: '',
   });
 
+  const [billingForm, setBillingForm] = useState<BillingForm>({
+    name: '',
+    email: '',
+    phone: '',
+  });
+
   const shippingCost = SHIPPING_RATES[shippingZone];
   const total = cartTotal + shippingCost;
 
