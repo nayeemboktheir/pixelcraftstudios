@@ -477,7 +477,7 @@ export default function EbookLandingPage() {
                   <input
                     type="email"
                     name="email"
-                    placeholder="ইমেইল (ঐচ্ছিক)"
+                    placeholder="ইমেইল *"
                     value={billingForm.email}
                     onChange={handleBillingChange}
                     className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-white/40 focus:outline-none focus:border-accent/60 focus:ring-1 focus:ring-accent/40 transition-all"
