@@ -354,12 +354,24 @@ const CheckoutPage = () => {
   };
 
   const validateForm = (): boolean => {
+    if (!billingForm.name.trim()) {
+      toast({ title: "Billing name is required", variant: "destructive" });
+      return false;
+    }
+    if (!billingForm.phone.trim() || !/^(\+?880)?01[3-9]\d{8}$/.test(billingForm.phone.replace(/\s/g, ''))) {
+      toast({ title: "Valid billing phone number is required", variant: "destructive" });
+      return false;
+    }
+    if (billingForm.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(billingForm.email.trim())) {
+      toast({ title: "Valid email address is required", variant: "destructive" });
+      return false;
+    }
     if (!shippingForm.name.trim()) {
-      toast({ title: "Name is required", variant: "destructive" });
+      toast({ title: "Delivery name is required", variant: "destructive" });
       return false;
     }
     if (!shippingForm.phone.trim() || !/^(\+?880)?01[3-9]\d{8}$/.test(shippingForm.phone.replace(/\s/g, ''))) {
-      toast({ title: "Valid Bangladesh phone number is required", variant: "destructive" });
+      toast({ title: "Valid delivery phone number is required", variant: "destructive" });
       return false;
     }
     if (!shippingForm.address.trim()) {
