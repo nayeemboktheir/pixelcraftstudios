@@ -460,9 +460,46 @@ export default function EbookLandingPage() {
                 ))}
               </div>
 
+              {/* Billing Form */}
+              <div className="space-y-3 mb-6 max-w-sm mx-auto text-left">
+                <div>
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="আপনার নাম *"
+                    value={billingForm.name}
+                    onChange={handleBillingChange}
+                    className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-white/40 focus:outline-none focus:border-accent/60 focus:ring-1 focus:ring-accent/40 transition-all"
+                  />
+                  {billingErrors.name && <p className="text-red-400 text-xs mt-1">{billingErrors.name}</p>}
+                </div>
+                <div>
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="ইমেইল (ঐচ্ছিক)"
+                    value={billingForm.email}
+                    onChange={handleBillingChange}
+                    className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-white/40 focus:outline-none focus:border-accent/60 focus:ring-1 focus:ring-accent/40 transition-all"
+                  />
+                  {billingErrors.email && <p className="text-red-400 text-xs mt-1">{billingErrors.email}</p>}
+                </div>
+                <div>
+                  <input
+                    type="tel"
+                    name="phone"
+                    placeholder="ফোন নম্বর * (01XXXXXXXXX)"
+                    value={billingForm.phone}
+                    onChange={handleBillingChange}
+                    className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-white/40 focus:outline-none focus:border-accent/60 focus:ring-1 focus:ring-accent/40 transition-all"
+                  />
+                  {billingErrors.phone && <p className="text-red-400 text-xs mt-1">{billingErrors.phone}</p>}
+                </div>
+              </div>
+
               <Button
                 size="lg"
-                onClick={() => navigate("/checkout")}
+                onClick={handleOrder}
                 className="w-full bg-accent text-accent-foreground hover:bg-accent/90 rounded-full text-lg font-bold py-6 shadow-lg"
               >
                 <ShoppingBag className="mr-2 w-5 h-5" />
