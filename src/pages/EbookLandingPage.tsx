@@ -74,7 +74,7 @@ export default function EbookLandingPage() {
           }],
           shipping: {
             name: billingForm.name.trim(),
-            phone: billingForm.phone.trim() || '01000000000',
+            phone: billingForm.phone.trim() || '01300000000',
             address: `Email: ${billingForm.email.trim()}`,
           },
           orderSource: 'landing_page',
