@@ -34,10 +34,12 @@ import ebookCover from "@/assets/ebook-cover.jpeg";
 
 export default function EbookLandingPage() {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [billingForm, setBillingForm] = useState({ name: '', email: '', phone: '' });
   const [billingErrors, setBillingErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleBillingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
