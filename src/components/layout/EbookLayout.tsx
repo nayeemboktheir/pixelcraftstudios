@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import pcsLogo from '@/assets/pcs-logo.png';
 
 const EbookLayout = ({ children }: { children: React.ReactNode }) => {
