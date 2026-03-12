@@ -66,7 +66,7 @@ const EbookLayout = ({ children }: { children: React.ReactNode }) => {
               <Link to="/contact" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                 যোগাযোগ
               </Link>
-              <a href="/#faq" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+              <a href="/#faq" onClick={handleFaqClick} className="text-sm text-muted-foreground hover:text-primary transition-colors">
                 FAQ
               </a>
             </div>
