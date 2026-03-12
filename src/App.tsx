@@ -99,17 +99,17 @@ const App = () => (
               <Route
                 path="/about"
                 element={
-                  <StorefrontLayout>
+                  <EbookLayout>
                     <AboutPage />
-                  </StorefrontLayout>
+                  </EbookLayout>
                 }
               />
               <Route
                 path="/contact"
                 element={
-                  <StorefrontLayout>
+                  <EbookLayout>
                     <ContactPage />
-                  </StorefrontLayout>
+                  </EbookLayout>
                 }
               />
               <Route
