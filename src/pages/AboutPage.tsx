@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
 import { BookOpen, Brain, Sparkles, Target, Shield, Users, Zap, MessageCircle } from 'lucide-react';
-import Header from '@/components/layout/Header';
 import pcsLogo from '@/assets/pcs-logo.png';
 
 const AboutPage = () => {
