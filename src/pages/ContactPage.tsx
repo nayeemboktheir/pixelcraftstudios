@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import Header from "@/components/layout/Header";
+
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -79,9 +79,7 @@ const ContactPage = () => {
   ];
 
   return (
-    <>
-      <Header />
-      <div className="pt-32 pb-16 min-h-screen bg-gradient-to-b from-background via-muted/30 to-background">
+    <div className="pb-16 min-h-screen bg-gradient-to-b from-background via-muted/30 to-background">
         {/* Hero Section */}
         <section className="relative py-16 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/5" />
@@ -251,8 +249,7 @@ const ContactPage = () => {
             </div>
           </div>
         </section>
-      </div>
-    </>
+    </div>
   );
 };
 
