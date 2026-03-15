@@ -110,7 +110,16 @@ const statusOptions = [
   { value: 'confirmed', label: 'Confirmed', icon: CheckCircle, color: 'bg-teal-500' },
   { value: 'shipped', label: 'Shipped', icon: Truck, color: 'bg-purple-500' },
   { value: 'delivered', label: 'Delivered', icon: CheckCircle, color: 'bg-green-500' },
+  { value: 'email_sent', label: 'Email Sent', icon: Mail, color: 'bg-indigo-500' },
+  { value: 'completed', label: 'Completed', icon: CheckCircle, color: 'bg-emerald-500' },
   { value: 'returned', label: 'Returned', icon: XCircle, color: 'bg-orange-500' },
+  { value: 'cancelled', label: 'Cancelled', icon: XCircle, color: 'bg-red-500' },
+];
+
+const digitalStatusOptions = [
+  { value: 'pending', label: 'Pending', icon: Clock, color: 'bg-yellow-500' },
+  { value: 'email_sent', label: 'Email Sent', icon: Mail, color: 'bg-indigo-500' },
+  { value: 'completed', label: 'Completed', icon: CheckCircle, color: 'bg-emerald-500' },
   { value: 'cancelled', label: 'Cancelled', icon: XCircle, color: 'bg-red-500' },
 ];
 
