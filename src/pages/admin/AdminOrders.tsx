@@ -1555,6 +1555,72 @@ export default function AdminOrders() {
         onOpenChange={setIsManualOrderOpen}
         onOrderCreated={loadOrders}
       />
+
+      {/* Digital Product Email Dialog */}
+      <Dialog open={emailDialogOpen} onOpenChange={setEmailDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Mail className="h-5 w-5 text-indigo-600" />
+              ডাউনলোড ইমেইল পাঠান
+            </DialogTitle>
+          </DialogHeader>
+          {emailOrder && (
+            <div className="space-y-4">
+              <div className="bg-muted/50 rounded-lg p-3 space-y-1 text-sm">
+                <p><strong>Order:</strong> {emailOrder.order_number}</p>
+                <p><strong>Customer:</strong> {emailOrder.shipping_name}</p>
+                <p><strong>Email:</strong> {extractEmail(emailOrder) || 'Not found'}</p>
+                <p><strong>Product:</strong> {emailOrder.order_items.map(i => i.product_name).join(', ')}</p>
+                <p><strong>Total:</strong> ৳{Number(emailOrder.total).toFixed(0)}</p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label className="flex items-center gap-1">
+                  <Link className="h-3.5 w-3.5" />
+                  Download Link *
+                </Label>
+                <Input
+                  value={downloadLink}
+                  onChange={(e) => setDownloadLink(e.target.value)}
+                  placeholder="https://drive.google.com/..."
+                  type="url"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Google Drive, Dropbox বা অন্য কোনো ডাউনলোড লিংক দিন
+                </p>
+              </div>
+
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setEmailDialogOpen(false)}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleSendDigitalEmail}
+                  disabled={sendingEmail || !downloadLink.trim() || !extractEmail(emailOrder)}
+                  className="flex-1 gap-2 bg-indigo-600 hover:bg-indigo-700"
+                >
+                  {sendingEmail ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      পাঠানো হচ্ছে...
+                    </>
+                  ) : (
+                    <>
+                      <Mail className="h-4 w-4" />
+                      ইমেইল পাঠান
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
