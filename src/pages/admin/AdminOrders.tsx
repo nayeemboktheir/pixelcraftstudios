@@ -1426,7 +1426,7 @@ export default function AdminOrders() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {statusOptions.map((status) => (
+                        {getStatusOptionsForOrder(selectedOrder).map((status) => (
                           <SelectItem key={status.value} value={status.value}>
                             {status.label}
                           </SelectItem>
@@ -1434,6 +1434,7 @@ export default function AdminOrders() {
                       </SelectContent>
                     </Select>
                   </div>
+                  {selectedOrder.order_source !== 'landing_page' && (
                   <div className="space-y-2">
                     <Label>Tracking Number</Label>
                     <Input
@@ -1442,6 +1443,7 @@ export default function AdminOrders() {
                       placeholder="Enter tracking number"
                     />
                   </div>
+                  )}
                 </div>
                 <div className="flex gap-2 mt-4">
                   <Button
@@ -1455,14 +1457,28 @@ export default function AdminOrders() {
                     <Edit className="h-4 w-4" />
                     Edit Order
                   </Button>
-                  <Button
-                    onClick={() => handleSendToSteadfast(selectedOrder)}
-                    disabled={sendingToSteadfast || !!selectedOrder.tracking_number}
-                    className="flex-1"
-                  >
-                    <Send className="h-4 w-4 mr-2" />
-                    {sendingToSteadfast ? 'Sending...' : selectedOrder.tracking_number ? 'Already Sent to Steadfast' : 'Send to Steadfast'}
-                  </Button>
+                  {selectedOrder.order_source === 'landing_page' ? (
+                    <Button
+                      onClick={() => {
+                        setIsDetailOpen(false);
+                        openEmailDialog(selectedOrder);
+                      }}
+                      disabled={selectedOrder.status === 'email_sent' || selectedOrder.status === 'completed'}
+                      className="flex-1 gap-2 bg-indigo-600 hover:bg-indigo-700"
+                    >
+                      <Mail className="h-4 w-4" />
+                      {selectedOrder.status === 'email_sent' ? 'Email Already Sent' : selectedOrder.status === 'completed' ? 'Completed' : 'Send Download Email'}
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => handleSendToSteadfast(selectedOrder)}
+                      disabled={sendingToSteadfast || !!selectedOrder.tracking_number}
+                      className="flex-1"
+                    >
+                      <Send className="h-4 w-4 mr-2" />
+                      {sendingToSteadfast ? 'Sending...' : selectedOrder.tracking_number ? 'Already Sent to Steadfast' : 'Send to Steadfast'}
+                    </Button>
+                  )}
                   <Button
                     variant="destructive"
                     onClick={() => openDeleteDialog(selectedOrder)}
