@@ -1028,7 +1028,7 @@ export default function AdminOrders() {
             </div>
         </CardHeader>
         <CardContent className="overflow-x-auto">
-          <Table className="min-w-[1400px]">
+          <Table className={isDigitalView ? "min-w-[900px]" : "min-w-[1400px]"}>
             <TableHeader>
               <TableRow>
                 <TableHead className="w-10">
@@ -1038,17 +1038,18 @@ export default function AdminOrders() {
                   />
                 </TableHead>
                 <TableHead>Order</TableHead>
-                <TableHead>Source</TableHead>
+                {!isDigitalView && <TableHead>Source</TableHead>}
                 <TableHead>Customer</TableHead>
+                {isDigitalView && <TableHead>Email</TableHead>}
                 <TableHead>Products</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Total</TableHead>
                 <TableHead>Payment</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Steadfast Status</TableHead>
-                <TableHead>Print</TableHead>
+                {!isDigitalView && <TableHead>Steadfast Status</TableHead>}
+                {!isDigitalView && <TableHead>Print</TableHead>}
                 <TableHead>Change Status</TableHead>
-                <TableHead>Tracking</TableHead>
+                {!isDigitalView && <TableHead>Tracking</TableHead>}
                 <TableHead className="text-right sticky right-0 bg-background shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]">Actions</TableHead>
               </TableRow>
             </TableHeader>
