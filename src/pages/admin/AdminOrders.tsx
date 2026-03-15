@@ -854,7 +854,8 @@ export default function AdminOrders() {
         </Tabs>
       </div>
 
-      {/* Steadfast Status Filters */}
+      {/* Steadfast Status Filters - hide for digital products */}
+      {!isDigitalView && (
       <div className="flex items-center gap-3 flex-wrap">
         <span className="text-sm font-medium text-muted-foreground">Steadfast Status:</span>
         <div className="flex gap-2">
@@ -909,6 +910,7 @@ export default function AdminOrders() {
           Refresh Status
         </Button>
       </div>
+      )}
 
       <Card>
         <CardHeader>
