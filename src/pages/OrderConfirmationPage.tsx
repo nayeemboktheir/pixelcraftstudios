@@ -34,7 +34,19 @@ const generateEventId = () => {
 const OrderConfirmationPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const state = location.state as OrderDetails | null;
+  
+  // Try location state first, then sessionStorage (for payment gateway redirect)
+  const stateFromNav = location.state as OrderDetails | null;
+  const state = stateFromNav || (() => {
+    try {
+      const stored = sessionStorage.getItem('pending_order_confirmation');
+      if (stored) {
+        sessionStorage.removeItem('pending_order_confirmation');
+        return JSON.parse(stored) as OrderDetails;
+      }
+    } catch {}
+    return null;
+  })();
 
   const purchaseEventIdRef = useRef<string | null>(null);
   const hasSentServerPurchaseRef = useRef(false);
