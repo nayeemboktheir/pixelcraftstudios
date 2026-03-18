@@ -456,20 +456,21 @@ const CheckoutPage = () => {
       
       dispatch(clearCart());
       
-      // Navigate to confirmation page with order details including items for tracking
-      navigate('/order-confirmation', {
-        state: {
-          orderNumber: order.id,
-          customerName: shippingForm.name,
-          phone: shippingForm.phone,
-          total: total,
-          items: orderItems,
-          numItems: cartItems.reduce((sum, item) => sum + item.quantity, 0),
-          city: shippingZone === 'inside_dhaka' ? 'dhaka' : 'bangladesh',
-          district: shippingZone === 'inside_dhaka' ? 'dhaka' : undefined,
-        },
-        replace: true, // Replace to prevent back navigation to checkout
-      });
+      // Store order confirmation data in sessionStorage so it's available after payment redirect
+      const confirmationData = {
+        orderNumber: order.id,
+        customerName: shippingForm.name,
+        phone: shippingForm.phone,
+        total: total,
+        items: orderItems,
+        numItems: cartItems.reduce((sum, item) => sum + item.quantity, 0),
+        city: shippingZone === 'inside_dhaka' ? 'dhaka' : 'bangladesh',
+        district: shippingZone === 'inside_dhaka' ? 'dhaka' : undefined,
+      };
+      sessionStorage.setItem('pending_order_confirmation', JSON.stringify(confirmationData));
+
+      // Redirect to payment gateway
+      window.location.href = 'https://pg.eps.com.bd/StaticPaymentLink?id=14F685E8';
     } catch (error) {
       console.error('Order error:', error);
       const msg =
